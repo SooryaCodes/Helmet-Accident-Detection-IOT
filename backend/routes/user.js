@@ -1,5 +1,5 @@
 const express = require('express');
-const authenticate = require('../middleware/authenticate');
+const authenticate = require('../middleware/authMiddleware');
 const { addEmergencyContacts, addLocation } = require('../controllers/userController');
 
 const router = express.Router();

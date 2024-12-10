@@ -1,39 +1,19 @@
-const User = require('../models/User');
+const express = require('express');
+const passport = require('passport');
+const { signup, googleCallback, login } = require('../controllers/authController');
 
-// Add Emergency Contacts
-exports.addEmergencyContacts = async (req, res) => {
-    const { primaryPhone, secondaryPhone } = req.body;
+const router = express.Router();
 
-    try {
-        const user = await User.findById(req.user.id);
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
+// Signup Route
+router.post('/signup', signup);
 
-        user.emergencyContacts = { primaryPhone, secondaryPhone };
-        await user.save();
+// Login Route
+router.post('/login', login);
 
-        res.status(200).json({ message: 'Emergency contacts updated successfully', contacts: user.emergencyContacts });
-    } catch (err) {
-        res.status(500).json({ message: 'Server error', error: err.message });
-    }
-};
+// Google OAuth Login
+router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
-// Add Location
-exports.addLocation = async (req, res) => {
-    const { latitude, longitude, placeName } = req.body;
+// Google OAuth Callback
+router.get('/auth/google/callback', passport.authenticate('google', { session: false }), googleCallback);
 
-    try {
-        const user = await User.findById(req.user.id);
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-
-        user.location = { latitude, longitude, placeName };
-        await user.save();
-
-        res.status(200).json({ message: 'Location updated successfully', location: user.location });
-    } catch (err) {
-        res.status(500).json({ message: 'Server error', error: err.message });
-    }
-};
+module.exports = router;

@@ -4,7 +4,11 @@ const User = require('../models/User');
 
 // Signup Handler
 exports.signup = async (req, res) => {
-    const { name, email, password, primaryPhone, secondaryPhone } = req.body;
+    const { name, email, password } = req.body;
+    // Check if all required fields (name, email, password) are provided
+    if (!name || !email || !password) {
+        return res.status(400).json({ message: 'Name, email, and password are required' });
+    }
 
     try {
         // Check if user already exists
@@ -22,7 +26,6 @@ exports.signup = async (req, res) => {
             name,
             email,
             password: hashedPassword,
-            emergencyContacts: { primaryPhone, secondaryPhone },
         });
 
         await newUser.save();
@@ -59,5 +62,17 @@ exports.login = async (req, res) => {
         res.status(200).json({ token, message: 'Login successful' });
     } catch (err) {
         res.status(500).json({ message: 'Server error', error: err.message });
+    }
+};
+
+
+// Google OAuth Callback Handler
+exports.googleCallback = async (req, res) => {
+    try {
+        const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+        res.redirect(`http://your-client-url.com?token=${token}`);
+    } catch (err) {
+        res.status(500).json({ message: 'Google login error', error: err.message });
     }
 };

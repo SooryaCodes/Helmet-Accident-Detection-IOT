@@ -16,7 +16,7 @@ axiosInstance.interceptors.request.use(
     // Add Authorization token if it exists in localStorage
     const token = localStorage.getItem('token');
     if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
+      config.headers['Authorization'] = token;
     }
     return config;
   },

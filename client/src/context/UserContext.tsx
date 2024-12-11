@@ -1,50 +1,41 @@
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+// src/context/UserContext.tsx
+import React, { createContext, useState, useContext } from 'react';
 
-// Define types for User and Context data
 interface User {
-    _id: string;
-    name: string;
-    email: string;
+  name: string;
+  email: string;
 }
 
 interface UserContextType {
-    user: User | null;
-    setUserData: (user: User) => void;
-    clearUserData: () => void;
+  user: User | null;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>; // Add setUser to the context type
+  clearUserData: () => void; // Add clearUserData to the context type
 }
 
-// Create context
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
-// Create a custom hook to use user data
-export const useUserContext = (): UserContextType => {
-    const context = useContext(UserContext);
-    if (!context) {
-        throw new Error('useUserContext must be used within a UserProvider');
-    }
-    return context;
+export const useUserContext = () => {
+  const context = useContext(UserContext);
+  if (!context) {
+    throw new Error('useUserContext must be used within a UserProvider');
+  }
+  return context;
 };
 
-// UserContext provider
 interface UserProviderProps {
-    children: ReactNode;
+  children: React.ReactNode;
 }
 
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
-    const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
-    const setUserData = (user: User) => {
-        setUser(user);
-    };
+  const clearUserData = () => {
+    setUser(null);
+  };
 
-    const clearUserData = () => {
-        setUser(null);
-    };
-
-    return (
-        <UserContext.Provider value= {{ user, setUserData, clearUserData }
-}>
-    { children }
+  return (
+    <UserContext.Provider value={{ user, setUser, clearUserData }}>
+      {children}
     </UserContext.Provider>
   );
 };

@@ -1,84 +1,74 @@
-// src/pages/Signup.tsx
-import React, { useState, ChangeEvent, FormEvent } from 'react';
-import { Button, Label, TextInput } from 'flowbite-react';
-import axios from '../config/axios'; // Import your Axios instance
-import { useUserContext } from '../context/UserContext';
-import { useNavigate } from 'react-router-dom';
-
-interface FormData {
-  name: string;
-  email: string;
-  password: string;
-}
+import React, { useState } from 'react';
+import axios from '../config/axios'; // Axios setup from previous steps
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
+import { TextInput, Button } from 'flowbite-react'; // Flowbite React components
+import { useUserContext } from '../context/UserContext'; // User context for global state
 
 const Signup: React.FC = () => {
-  const { setUserData } = useUserContext(); // Access the context to store user data
-  const [formData, setFormData] = useState<FormData>({ name: '', email: '', password: '' });
-  const [error, setError] = useState<string>('');
-  const navigate = useNavigate();
+  const [userData, setUserData] = useState({ name: '', email: '', password: '' });
+  const { user, setUser } = useUserContext(); // Get setUser from context to update user state globally
+  const navigate = useNavigate(); // Hook for redirection
 
-  // Handle input changes
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  // Handle form submission
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.post('/api/auth/signup', formData);
-      const { token, user } = response.data;
+      const response = await axios.post('/api/auth/signup', userData);
+      console.log("succces navigating soorya", response.status)
 
-      localStorage.setItem('token', token); // Store the token in local storage
-      setUserData(user); // Store user data in context
-      navigate('/dashboard'); // Redirect to dashboard after successful signup
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Signup failed');
+      if (response.status === 201) {
+        // Store the token in localStorage
+        localStorage.setItem('token', response.data.token);
+        // Redirect to emergency contacts page
+        console.log("succces navigating soorya", response.data)
+        navigate('/emergency-contacts');
+        // Update User Context with the user data from the backend (optional, assuming it returns user info)
+        setUser({
+          name: response.data.user.name,
+          email: response.data.user.email,
+        });
+
+
+      }
+    } catch (err) {
+      console.error('Error signing up:', err);
     }
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 border rounded-lg shadow-md">
-      <h2 className="text-2xl font-semibold mb-4">Signup</h2>
-      {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
+    <div className="max-w-md mx-auto mt-12 p-6 bg-white rounded-lg shadow-lg">
+      <h1 className="text-2xl font-bold mb-6 text-center">Signup</h1>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
-          <Label htmlFor="name">Name</Label>
           <TextInput
-            id="name"
-            name="name"
             type="text"
-            value={formData.name}
-            onChange={handleInputChange}
+            placeholder="Name"
+            value={userData.name}
+            onChange={(e) => setUserData({ ...userData, name: e.target.value })}
             required
+            className="block w-full"
           />
         </div>
         <div className="mb-4">
-          <Label htmlFor="email">Email</Label>
           <TextInput
-            id="email"
-            name="email"
             type="email"
-            value={formData.email}
-            onChange={handleInputChange}
+            placeholder="Email"
+            value={userData.email}
+            onChange={(e) => setUserData({ ...userData, email: e.target.value })}
             required
+            className="block w-full"
           />
         </div>
         <div className="mb-4">
-          <Label htmlFor="password">Password</Label>
           <TextInput
-            id="password"
-            name="password"
             type="password"
-            value={formData.password}
-            onChange={handleInputChange}
+            placeholder="Password"
+            value={userData.password}
+            onChange={(e) => setUserData({ ...userData, password: e.target.value })}
             required
+            className="block w-full"
           />
         </div>
-        <Button type="submit" className="w-full">
-          Sign Up
-        </Button>
+        <Button type="submit" className="w-full">Sign Up</Button>
       </form>
     </div>
   );

@@ -4,8 +4,8 @@ const User = require('../models/User');
 const { getPlaceNameFromCoordinates, sendAlertToContacts } = require('../utils/accidentUtils');
 
 const client = redis.createClient({
-    url: process.env.REDIS_URL, 
-  });
+    url: process.env.REDIS_URL,
+});
 client.on('error', (err) => {
     console.error('Redis error:', err);
 });
@@ -43,10 +43,8 @@ exports.registerDevice = async (req, res) => {
     }
 
     try {
-        // Store MAC address temporarily in Redis with an expiry time of 10 minutes
         const redisKey = `mac_${macAddress}`;
-        client.setex(redisKey, 600, 'pending'); // Mark it as pending with a temporary value
-
+        client.set(redisKey, 'pending', 'EX', 120)
         res.status(200).json({ message: 'MAC address temporarily stored' });
     } catch (err) {
         res.status(500).json({ message: 'Server error', error: err.message });

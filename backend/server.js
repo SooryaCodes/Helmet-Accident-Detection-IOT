@@ -3,7 +3,7 @@ const express = require('express');
 const connectDB = require('./config/db');
 const passport = require('passport');
 require('./config/passport'); // Import Passport configuration
-
+const cors = require("cors")
 const app = express();
 
 

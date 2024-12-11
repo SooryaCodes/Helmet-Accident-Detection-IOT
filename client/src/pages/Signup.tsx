@@ -27,7 +27,7 @@ const Signup: React.FC = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.post('/api/signup', formData);
+      const response = await axios.post('/api/auth/signup', formData);
       const { token, user } = response.data;
 
       localStorage.setItem('token', token); // Store the token in local storage

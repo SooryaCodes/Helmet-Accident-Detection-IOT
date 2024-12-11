@@ -6,6 +6,8 @@ require('./config/passport'); // Import Passport configuration
 
 const app = express();
 
+
+app.use(cors())
 // Connect Database
 connectDB();
 

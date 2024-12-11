@@ -1,76 +1,87 @@
-// SignUp.tsx
-import React, { useState } from 'react';
-import { auth, db } from '../firebase';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
+// src/pages/Signup.tsx
+import React, { useState, ChangeEvent, FormEvent } from 'react';
+import { Button, Label, TextInput } from 'flowbite-react';
+import axios from '../config/axios'; // Import your Axios instance
+import { useUserContext } from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
 
-const SignUp: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
-  const [error, setError] = useState('');
+interface FormData {
+  name: string;
+  email: string;
+  password: string;
+}
+
+const Signup: React.FC = () => {
+  const { setUserData } = useUserContext(); // Access the context to store user data
+  const [formData, setFormData] = useState<FormData>({ name: '', email: '', password: '' });
+  const [error, setError] = useState<string>('');
   const navigate = useNavigate();
 
-  const handleSignUp = async () => {
+  // Handle input changes
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
+      const response = await axios.post('/api/signup', formData);
+      const { token, user } = response.data;
 
-      // Save user data to Firestore
-      await setDoc(doc(db, 'users', user.uid), {
-        name,
-        email,
-        emergencyContacts: [], // Placeholder for emergency contacts
-      });
-
-      navigate('/emergency-contacts'); // Redirect to next page
+      localStorage.setItem('token', token); // Store the token in local storage
+      setUserData(user); // Store user data in context
+      navigate('/dashboard'); // Redirect to dashboard after successful signup
     } catch (err: any) {
-      setError(err.message);
+      setError(err.response?.data?.message || 'Signup failed');
     }
   };
 
   return (
-    <div className="flex h-screen items-center justify-center bg-gray-100">
-      <div className="max-w-md w-full bg-white shadow-md rounded-md p-8">
-        <h2 className="text-2xl font-bold text-center mb-6">Create an Account</h2>
-        {error && <p className="text-red-500 mb-4">{error}</p>}
-        <div>
-          <label className="block mb-2 text-sm font-medium">Full Name</label>
-          <input
+    <div className="max-w-md mx-auto mt-10 p-6 border rounded-lg shadow-md">
+      <h2 className="text-2xl font-semibold mb-4">Signup</h2>
+      {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
+      <form onSubmit={handleSubmit}>
+        <div className="mb-4">
+          <Label htmlFor="name">Name</Label>
+          <TextInput
+            id="name"
+            name="name"
             type="text"
-            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={formData.name}
+            onChange={handleInputChange}
+            required
           />
         </div>
-        <div className="mt-4">
-          <label className="block mb-2 text-sm font-medium">Email Address</label>
-          <input
+        <div className="mb-4">
+          <Label htmlFor="email">Email</Label>
+          <TextInput
+            id="email"
+            name="email"
             type="email"
-            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={formData.email}
+            onChange={handleInputChange}
+            required
           />
         </div>
-        <div className="mt-4">
-          <label className="block mb-2 text-sm font-medium">Password</label>
-          <input
+        <div className="mb-4">
+          <Label htmlFor="password">Password</Label>
+          <TextInput
+            id="password"
+            name="password"
             type="password"
-            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={formData.password}
+            onChange={handleInputChange}
+            required
           />
         </div>
-        <button
-          onClick={handleSignUp}
-          className="w-full mt-6 bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600"
-        >
+        <Button type="submit" className="w-full">
           Sign Up
-        </button>
-      </div>
+        </Button>
+      </form>
     </div>
   );
 };
 
-export default SignUp;
+export default Signup;

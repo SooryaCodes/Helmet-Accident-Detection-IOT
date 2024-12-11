@@ -3,8 +3,9 @@ const redis = require('redis');
 const User = require('../models/User');
 const { getPlaceNameFromCoordinates, sendAlertToContacts } = require('../utils/accidentUtils');
 
-const client = redis.createClient(); // Redis connection
-
+const client = redis.createClient({
+    url: process.env.REDIS_URL, 
+  });
 client.on('error', (err) => {
     console.error('Redis error:', err);
 });
@@ -56,32 +57,25 @@ exports.registerDevice = async (req, res) => {
 exports.getLocationAndSendAlert = async (req, res) => {
     const { latitude, longitude, macAddress } = req.body;
 
-    // Validate request body
     if (!macAddress || !latitude || !longitude) {
         return res.status(400).json({ message: 'MAC address, latitude, and longitude are required' });
     }
 
     try {
-        // Find the user associated with the MAC address
         const user = await User.findOne({ macAddress });
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        // Get place name from latitude and longitude
         const placeName = await getPlaceNameFromCoordinates(latitude, longitude);
 
-        // Update user location
         user.location = { latitude, longitude, placeName };
         await user.save();
 
-        // Get emergency contacts from the user record
         const emergencyContacts = user.emergencyContacts;
 
-        // Send alert message to emergency contacts with the location route (Google Maps link)
         if (emergencyContacts && emergencyContacts.primaryPhone) {
             const message = `Accident alert! A user has encountered an accident at ${placeName}. Check the location: https://maps.google.com/?q=${latitude},${longitude}`;
-            // Here you can send SMS, email, or other communication methods to the primary and secondary contacts
             await sendAlertToContacts(emergencyContacts.primaryPhone, message);
             if (emergencyContacts.secondaryPhone) {
                 await sendAlertToContacts(emergencyContacts.secondaryPhone, message);

@@ -29,7 +29,8 @@ exports.signup = async (req, res) => {
         });
 
         await newUser.save();
-
+        console.log(newUser);
+        
         // Generate JWT token
         const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 

@@ -6,31 +6,36 @@ import { useUserContext } from '../context/UserContext'; // User context for glo
 
 const Signup: React.FC = () => {
   const [userData, setUserData] = useState({ name: '', email: '', password: '' });
-  const { user, setUser } = useUserContext(); // Get setUser from context to update user state globally
+  const [error, setError] = useState<string | null>(null); // Error state to hold error message
+  const { setUser } = useUserContext(); // Get setUser from context to update user state globally
   const navigate = useNavigate(); // Hook for redirection
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null); // Reset any previous errors
+
     try {
       const response = await axios.post('/api/auth/signup', userData);
-      console.log("succces navigating soorya", response.status)
+      console.log("Success:", response.status);
 
       if (response.status === 201) {
-        // Store the token in localStorage
+        // Store the token and user details in localStorage
         localStorage.setItem('token', response.data.token);
-        // Redirect to emergency contacts page
-        console.log("succces navigating soorya", response.data)
-        navigate('/emergency-contacts');
-        // Update User Context with the user data from the backend (optional, assuming it returns user info)
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+
+        // Update User Context with the user data from the backend
         setUser({
+          _id: response.data.user._id,
           name: response.data.user.name,
           email: response.data.user.email,
         });
 
-
+        // Redirect to emergency contacts page
+        navigate('/emergency-contacts');
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error signing up:', err);
+      setError('Failed to sign up. Please try again.');
     }
   };
 
@@ -38,6 +43,8 @@ const Signup: React.FC = () => {
     <div className="max-w-md mx-auto mt-12 p-6 bg-white rounded-lg shadow-lg">
       <h1 className="text-2xl font-bold mb-6 text-center">Signup</h1>
       <form onSubmit={handleSubmit}>
+        {error && <div className="mb-4 text-red-600">{error}</div>} {/* Error message display */}
+        
         <div className="mb-4">
           <TextInput
             type="text"
@@ -48,6 +55,7 @@ const Signup: React.FC = () => {
             className="block w-full"
           />
         </div>
+        
         <div className="mb-4">
           <TextInput
             type="email"
@@ -58,6 +66,7 @@ const Signup: React.FC = () => {
             className="block w-full"
           />
         </div>
+        
         <div className="mb-4">
           <TextInput
             type="password"
@@ -68,6 +77,7 @@ const Signup: React.FC = () => {
             className="block w-full"
           />
         </div>
+        
         <Button type="submit" className="w-full">Sign Up</Button>
       </form>
     </div>

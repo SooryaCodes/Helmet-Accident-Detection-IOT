@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import axios from '../config/axios'; // Axios setup from previous steps
 import { useNavigate } from 'react-router-dom'; // For navigation after form submission
-import { TextInput, Button, Label } from 'flowbite-react'; // Import Flowbite components for styling
 
 const EmergencyContacts: React.FC = () => {
   const [contacts, setContacts] = useState({ primaryPhone: '', secondaryPhone: '' });
@@ -30,35 +29,35 @@ const EmergencyContacts: React.FC = () => {
       <h1 className="text-3xl font-semibold mb-6 text-center">Emergency Contacts</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <Label htmlFor="primaryPhone" className="block text-lg mb-2">Primary Phone</Label>
-          <TextInput
+          <label htmlFor="primaryPhone" className="block text-lg mb-2">Primary Phone</label>
+          <input
             id="primaryPhone"
             type="tel"
             placeholder="Enter primary phone number"
             value={contacts.primaryPhone}
             onChange={(e) => setContacts({ ...contacts, primaryPhone: e.target.value })}
             required
-            className="w-full"
+            className="input input-bordered w-full"
           />
         </div>
 
         <div>
-          <Label htmlFor="secondaryPhone" className="block text-lg mb-2">Secondary Phone</Label>
-          <TextInput
+          <label htmlFor="secondaryPhone" className="block text-lg mb-2">Secondary Phone</label>
+          <input
             id="secondaryPhone"
             type="tel"
             placeholder="Enter secondary phone number"
             value={contacts.secondaryPhone}
             onChange={(e) => setContacts({ ...contacts, secondaryPhone: e.target.value })}
             required
-            className="w-full"
+            className="input input-bordered w-full"
           />
         </div>
 
         <div className="flex justify-center">
-          <Button type="submit" className="w-full bg-blue-500 hover:bg-blue-600">
+          <button type="submit" className="btn btn-primary w-full">
             Save Contacts
-          </Button>
+          </button>
         </div>
       </form>
     </div>

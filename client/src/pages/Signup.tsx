@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
 import axios from '../config/axios'; // Axios setup from previous steps
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
-import { TextInput, Button } from 'flowbite-react'; // Flowbite React components
-import { useUserContext } from '../context/UserContext'; // User context for global state
 
 const Signup: React.FC = () => {
-  const [userData, setUserData] = useState({ name: '', email: '', password: '' });
+  const [userData, setUserData] = useState({ name: '', email: '', password: '', phone: '' }); // Added phone
   const [error, setError] = useState<string | null>(null); // Error state to hold error message
-  const { setUser } = useUserContext(); // Get setUser from context to update user state globally
   const navigate = useNavigate(); // Hook for redirection
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -23,13 +20,6 @@ const Signup: React.FC = () => {
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('user', JSON.stringify(response.data.user));
 
-        // Update User Context with the user data from the backend
-        setUser({
-          _id: response.data.user._id,
-          name: response.data.user.name,
-          email: response.data.user.email,
-        });
-
         // Redirect to emergency contacts page
         navigate('/emergency-contacts');
       }
@@ -40,45 +30,64 @@ const Signup: React.FC = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-12 p-6 bg-white rounded-lg shadow-lg">
-      <h1 className="text-2xl font-bold mb-6 text-center">Signup</h1>
+    <div className="max-w-lg mx-auto mt-12 p-6 bg-base-100 rounded-lg shadow-lg">
+      <h1 className="text-3xl font-semibold mb-6 text-center">Signup</h1>
       <form onSubmit={handleSubmit}>
         {error && <div className="mb-4 text-red-600">{error}</div>} {/* Error message display */}
-        
+
         <div className="mb-4">
-          <TextInput
+          <label htmlFor="name" className="block text-lg mb-2">Name</label>
+          <input
+            id="name"
             type="text"
             placeholder="Name"
             value={userData.name}
             onChange={(e) => setUserData({ ...userData, name: e.target.value })}
             required
-            className="block w-full"
+            className="input input-bordered w-full "
           />
         </div>
-        
+
         <div className="mb-4">
-          <TextInput
+          <label htmlFor="email" className="block text-lg mb-2">Email</label>
+          <input
+            id="email"
             type="email"
             placeholder="Email"
             value={userData.email}
             onChange={(e) => setUserData({ ...userData, email: e.target.value })}
             required
-            className="block w-full"
+            className="input input-bordered w-full "
           />
         </div>
-        
+
         <div className="mb-4">
-          <TextInput
+          <label htmlFor="password" className="block text-lg mb-2">Password</label>
+          <input
+            id="password"
             type="password"
             placeholder="Password"
             value={userData.password}
             onChange={(e) => setUserData({ ...userData, password: e.target.value })}
             required
-            className="block w-full"
+            className="input input-bordered w-full "
           />
         </div>
-        
-        <Button type="submit" className="w-full">Sign Up</Button>
+
+        <div className="mb-4">
+          <label htmlFor="phone" className="block text-lg mb-2">Phone Number</label>
+          <input
+            id="phone"
+            type="text"
+            placeholder="Phone Number"
+            value={userData.phone}
+            onChange={(e) => setUserData({ ...userData, phone: e.target.value })}
+            required
+            className="input input-bordered w-full "
+          />
+        </div>
+
+        <button type="submit" className="btn btn-primary w-full">Sign Up</button>
       </form>
     </div>
   );

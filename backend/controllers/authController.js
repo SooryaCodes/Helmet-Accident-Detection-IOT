@@ -4,17 +4,24 @@ const User = require('../models/User');
 
 // Signup Handler
 exports.signup = async (req, res) => {
-    const { name, email, password } = req.body;
-    // Check if all required fields (name, email, password) are provided
-    if (!name || !email || !password) {
-        return res.status(400).json({ message: 'Name, email, and password are required' });
+    const { name, email, password, phone } = req.body;
+
+    // Check if all required fields (name, email, password, phone) are provided
+    if (!name || !email || !password || !phone) {
+        return res.status(400).json({ message: 'Name, email, password, and phone number are required' });
     }
 
     try {
-        // Check if user already exists
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            return res.status(400).json({ message: 'User already exists' });
+        // Check if user already exists by email or phone
+        const existingUserByEmail = await User.findOne({ email });
+        const existingUserByPhone = await User.findOne({ phone });
+
+        if (existingUserByEmail) {
+            return res.status(400).json({ message: 'User with this email already exists' });
+        }
+
+        if (existingUserByPhone) {
+            return res.status(400).json({ message: 'User with this phone number already exists' });
         }
 
         // Hash password
@@ -26,11 +33,12 @@ exports.signup = async (req, res) => {
             name,
             email,
             password: hashedPassword,
+            phone,
         });
 
         await newUser.save();
         console.log(newUser);
-        
+
         // Generate JWT token
         const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
@@ -39,6 +47,7 @@ exports.signup = async (req, res) => {
         res.status(500).json({ message: 'Server error', error: err.message });
     }
 };
+
 
 // Login Handler
 exports.login = async (req, res) => {

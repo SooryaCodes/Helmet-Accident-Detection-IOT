@@ -3,7 +3,6 @@ const axios = require("axios");
 // Environment variables for Twilio credentials
 require("dotenv").config();
 const twilio = require("twilio");
-const { getFormattedDateTime } = require("./dateTimeUtils");
 
 // Twilio credentials
 const accountSid = process.env.TWILIO_ACCOUNT_SID;

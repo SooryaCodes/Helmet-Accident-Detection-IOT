@@ -1,12 +1,14 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 
+// Define User interface
 interface User {
   _id: string;
   name: string;
   email: string;
-  phone:string;
+  phone: string;
 }
 
+// Define UserContextType
 interface UserContextType {
   user: User | null;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
@@ -27,10 +29,11 @@ interface UserProviderProps {
   children: React.ReactNode;
 }
 
+// Define UserProvider component
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
 
-  // Load user from localStorage on component mount
+  // Load user from localStorage or session storage on component mount
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {

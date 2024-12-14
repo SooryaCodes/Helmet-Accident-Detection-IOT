@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from '../config/axios';
 import { useUserContext } from '../context/UserContext';
 
-const DeviceRegistration: React.FC = () => {
+const   DeviceRegistration: React.FC = () => {
   const [timer, setTimer] = useState<number>(() => {
     const savedTimer = localStorage.getItem('timer');
     return savedTimer ? parseInt(savedTimer) : 120;

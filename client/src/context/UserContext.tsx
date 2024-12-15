@@ -13,6 +13,7 @@ interface UserContextType {
   user: User | null;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
   clearUserData: () => void;
+  isLoading: boolean; // Add isLoading to track loading state
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -32,6 +33,7 @@ interface UserProviderProps {
 // Define UserProvider component
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true); // Track loading state
 
   // Load user from localStorage or session storage on component mount
   useEffect(() => {
@@ -39,6 +41,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
+    setIsLoading(false); // After checking, set isLoading to false
   }, []);
 
   // Function to clear user data from both context and localStorage
@@ -56,7 +59,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   }, [user]);
 
   return (
-    <UserContext.Provider value={{ user, setUser, clearUserData }}>
+    <UserContext.Provider value={{ user, setUser, clearUserData, isLoading }}>
       {children}
     </UserContext.Provider>
   );

@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "../config/axios";
 import { Link, useNavigate } from "react-router-dom";
+import { useUserContext } from "../context/UserContext";
 
 export default function Login() {
   const [userData, setUserData] = useState({
@@ -12,9 +13,14 @@ export default function Login() {
     email: "",
     password: "",
   });
-
   const navigate = useNavigate();
+  const { user } = useUserContext();
 
+  useEffect(() => {
+    if (user) {
+      navigate("/dashboard");
+    }
+  }, [user, navigate]);
   const validateInputs = () => {
     let isValid = true;
     const errors = { email: "", password: "" };
@@ -61,7 +67,9 @@ export default function Login() {
       }
     } catch (err: any) {
       console.error("Error logging in:", err);
-      setError("Failed to log in. Please check your credentials and try again.");
+      setError(
+        "Failed to log in. Please check your credentials and try again.",
+      );
     }
   };
 
@@ -78,7 +86,7 @@ export default function Login() {
         <form onSubmit={handleSubmit} className="max-w-md md:max-w-xl">
           {error && <div className="mb-4 text-red-600">{error}</div>}
           <span className="mt-5 inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-600">
-            Stay Safe, Stay Connected
+            Ride Safe, Stay Connected
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="ml-1 h-6 w-6 duration-150"
@@ -103,14 +111,13 @@ export default function Login() {
             <label className="text-sm text-gray-800">Email</label>
             <div className="relative my-2 max-w-full">
               <input
-                required
                 type="email"
                 placeholder="Enter your email"
                 value={userData.email}
                 onChange={(e) =>
                   setUserData({ ...userData, email: e.target.value })
                 }
-                className="w-full rounded-lg border bg-transparent py-3 px-3 text-sm text-gray-800 outline-none focus:border-blue-600"
+                className="w-full rounded-lg border bg-transparent px-3 py-3 text-sm text-gray-800 outline-none focus:border-blue-600"
               />
             </div>
             {validationErrors.email && (
@@ -123,18 +130,19 @@ export default function Login() {
             <label className="text-sm text-gray-800">Password</label>
             <div className="relative my-2 max-w-full">
               <input
-                required
                 type="password"
                 value={userData.password}
                 onChange={(e) =>
                   setUserData({ ...userData, password: e.target.value })
                 }
                 placeholder="Enter your password"
-                className="w-full rounded-lg border bg-transparent py-3 px-3 text-sm text-gray-800 outline-none focus:border-blue-600"
+                className="w-full rounded-lg border bg-transparent px-3 py-3 text-sm text-gray-800 outline-none focus:border-blue-600"
               />
             </div>
             {validationErrors.password && (
-              <p className="text-xs text-red-600">{validationErrors.password}</p>
+              <p className="text-xs text-red-600">
+                {validationErrors.password}
+              </p>
             )}
           </div>
 

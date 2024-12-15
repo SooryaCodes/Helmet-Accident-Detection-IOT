@@ -5,9 +5,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     <div className=''>
      <Header/>
       <main className=''>{children}</main>
-      <footer>
-        <p>&copy; 2024 Your App Name</p>
-      </footer>
+     
     </div>
   );
 };

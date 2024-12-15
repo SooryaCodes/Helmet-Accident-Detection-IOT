@@ -1,21 +1,70 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "../config/axios"; // Axios setup from previous steps
 import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection
 import { Link } from "react-router-dom";
+import { useUserContext } from "../context/UserContext";
 
 export default function Signup() {
+  const navigate = useNavigate();
+  const { user } = useUserContext();
+  useEffect(() => {
+    if (user) {
+      navigate("/dashboard");
+    }
+  }, [user, navigate]);
   const [userData, setUserData] = useState({
     name: "",
     email: "",
     password: "",
     phone: "",
-  }); // Added phone
-  const [error, setError] = useState<string | null>(null); // Error state to hold error message
-  const navigate = useNavigate(); // Hook for redirection
+  });
+  const [errors, setErrors] = useState({
+    name: "",
+    email: "",
+    password: "",
+    phone: "",
+    general: "",
+  });
+
+  const validateInputs = () => {
+    let isValid = true;
+    const newErrors = {
+      name: "",
+      email: "",
+      password: "",
+      phone: "",
+      general: "",
+    };
+
+    if (!userData.name.trim()) {
+      newErrors.name = "Name is required.";
+      isValid = false;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(userData.email)) {
+      newErrors.email = "Enter a valid email address.";
+      isValid = false;
+    }
+
+    if (userData.password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters long.";
+      isValid = false;
+    }
+
+    const phoneRegex = /^\d{10}$/;
+    if (!phoneRegex.test(userData.phone)) {
+      newErrors.phone = "Enter a valid 10-digit phone number.";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null); // Reset any previous errors
+    if (!validateInputs()) return;
 
     try {
       const response = await axios.post("/api/auth/signup", userData);
@@ -31,16 +80,19 @@ export default function Signup() {
       }
     } catch (err: any) {
       console.error("Error signing up:", err);
-      setError("Failed to sign up. Please try again.");
+      setErrors((prev) => ({
+        ...prev,
+        general: "Failed to sign up. Please try again.",
+      }));
     }
   };
+
   return (
     <div className="grid h-screen grid-cols-1 gap-10 px-10 md:grid-cols-5 md:px-0 ">
-      <div className=" col-span-2 hidden h-full w-full md:block ">
-        {" "}
+      <div className="col-span-2 hidden h-full w-full md:block">
         <img
           src="/gradient.jpg"
-          className="h-full w-full   object-cover "
+          className="h-full w-full object-cover"
           alt=""
         />
       </div>
@@ -115,130 +167,93 @@ export default function Signup() {
             </li>
           </ol>
         </div>
-
         <form onSubmit={handleSubmit} className="max-w-md md:max-w-xl">
-          {error && <div className="mb-4 text-red-600">{error}</div>}{" "}
-          {/* Error message display */}
-          <span className="mt-5 inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-600">
-            Stay Safe, Stay Connected
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="ml-1 h-6 w-6 duration-150"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1}
-                d="M13 7l5 5m0 0l-5 5m5-5H6"
-              />
-            </svg>
-          </span>
-          <h1 className="mb-7 mt-3 text-2xl  font-semibold text-black lg:text-3xl">
+          {errors.general && (
+            <div className="mb-4 text-red-600">{errors.general}</div>
+          )}
+
+          <h1 className="mb-7 mt-3 text-2xl font-semibold text-black lg:text-3xl">
             Register Your SmartHelm and Stay Protected, Anytime, Anywhere
           </h1>
+
           {/* Name */}
           <div className="mt-4">
-            <label className="text-sm text-gray-800 ">Name</label>
+            <label className="text-sm text-gray-800">Name</label>
             <div className="relative my-2 max-w-full">
-              <svg
-                className="absolute inset-y-0 left-3 my-auto h-4 w-4 text-gray-600"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path d="M20 22H18V20C18 18.3431 16.6569 17 15 17H9C7.34315 17 6 18.3431 6 20V22H4V20C4 17.2386 6.23858 15 9 15H15C17.7614 15 20 17.2386 20 20V22ZM12 13C8.68629 13 6 10.3137 6 7C6 3.68629 8.68629 1 12 1C15.3137 1 18 3.68629 18 7C18 10.3137 15.3137 13 12 13ZM12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z"></path>
-              </svg>
               <input
-                required
                 type="text"
                 placeholder="Enter your full name"
                 value={userData.name}
                 onChange={(e) =>
                   setUserData({ ...userData, name: e.target.value })
                 }
-                className=" w-full rounded-lg border bg-transparent py-3 pl-12 pr-3 text-sm text-gray-800 outline-none   focus:border-blue-600"
+                className="w-full rounded-lg border bg-transparent py-3 pl-3 pr-3 text-sm text-gray-800 outline-none focus:border-blue-600"
               />
+              {errors.name && (
+                <div className="mt-1 text-sm text-red-600">{errors.name}</div>
+              )}
             </div>
           </div>
+
           {/* Email */}
           <div className="mt-4">
-            <label className="text-sm text-gray-800 ">Email</label>
+            <label className="text-sm text-gray-800">Email</label>
             <div className="relative my-2 max-w-full">
-              <svg
-                className="absolute inset-y-0 left-3 my-auto h-4 w-4 text-gray-600"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
-                />
-              </svg>
               <input
-                required
                 type="email"
                 placeholder="Enter your email"
                 value={userData.email}
                 onChange={(e) =>
                   setUserData({ ...userData, email: e.target.value })
                 }
-                className=" w-full rounded-lg border bg-transparent py-3 pl-12 pr-3 text-sm text-gray-800 outline-none   focus:border-blue-600"
+                className="w-full rounded-lg border bg-transparent py-3 pl-3 pr-3 text-sm text-gray-800 outline-none focus:border-blue-600"
               />
+              {errors.email && (
+                <div className="mt-1 text-sm text-red-600">{errors.email}</div>
+              )}
             </div>
           </div>
+
           {/* Phone */}
-          <div>
+          <div className="mt-4">
             <label className="text-sm text-gray-800">Phone number</label>
-            <div className="relative my-2 max-w-full text-sm text-gray-500">
-              <div className="absolute inset-y-0 left-3 my-auto flex h-6 items-center border-r pr-2">
-                <span className="h-full rounded-lg bg-transparent text-sm outline-none">
-                  +91 &nbsp;
-                </span>
-              </div>
+            <div className="relative my-2 max-w-full">
               <input
-                required
                 type="number"
+                placeholder="XXXX XXX XXX"
                 value={userData.phone}
                 onChange={(e) =>
                   setUserData({ ...userData, phone: e.target.value })
                 }
-                placeholder="XXXX XXX XXX"
-                className="w-full appearance-none rounded-lg border bg-transparent py-3  pl-[4.5rem] pr-3 shadow-sm outline-none focus:border-indigo-600"
+                className="w-full rounded-lg border bg-transparent py-3 pl-3 pr-3 text-sm text-gray-800 outline-none focus:border-blue-600"
               />
+              {errors.phone && (
+                <div className="mt-1 text-sm text-red-600">{errors.phone}</div>
+              )}
             </div>
           </div>
+
           {/* Password */}
           <div className="mt-4">
-            <label className="text-sm text-gray-800 ">Password</label>
+            <label className="text-sm text-gray-800">Password</label>
             <div className="relative my-2 max-w-full">
-              <svg
-                className="absolute inset-y-0 left-3 my-auto h-4 w-4 text-gray-600"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path d="M19 10H20C20.5523 10 21 10.4477 21 11V21C21 21.5523 20.5523 22 20 22H4C3.44772 22 3 21.5523 3 21V11C3 10.4477 3.44772 10 4 10H5V9C5 5.13401 8.13401 2 12 2C15.866 2 19 5.13401 19 9V10ZM5 12V20H19V12H5ZM11 14H13V18H11V14ZM17 10V9C17 6.23858 14.7614 4 12 4C9.23858 4 7 6.23858 7 9V10H17Z"></path>
-              </svg>
-
               <input
-                required
                 type="password"
+                placeholder="Enter your password"
                 value={userData.password}
                 onChange={(e) =>
                   setUserData({ ...userData, password: e.target.value })
                 }
-                placeholder="Enter your password"
-                className=" w-full rounded-lg border bg-transparent py-3 pl-12 pr-3 text-sm text-gray-800 outline-none   focus:border-blue-600"
+                className="w-full rounded-lg border bg-transparent py-3 pl-3 pr-3 text-sm text-gray-800 outline-none focus:border-blue-600"
               />
+              {errors.password && (
+                <div className="mt-1 text-sm text-red-600">
+                  {errors.password}
+                </div>
+              )}
             </div>
           </div>
+
           <p className="mt-5 text-xs text-gray-600">
             Already have an account?{" "}
             <Link to="/login" className="font-semibold hover:underline">

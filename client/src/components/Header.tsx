@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useUserContext } from "../context/UserContext";
 import InitialAvatar from "./InitialAvatar";
 import axios from "../config/axios"; // Import axios
-import { useNavigate } from "react-router-dom"; // Import useNavigate for redirect
+import { Link, useNavigate } from "react-router-dom"; // Import useNavigate for redirect
 
 // Type for the profile dropdown component props
 interface ProfileDropDownProps {
@@ -37,17 +37,14 @@ const ProfileDropDown = (props: ProfileDropDownProps) => {
   const handleLogout = async () => {
     try {
       // Use axios to call the logout API
-      const response = await axios.post(
-        "/api/auth/logout",
-        {},
-      );
+      const response = await axios.post("/api/auth/logout", {});
 
       if (response.status === 200) {
         // Reset the user context after successful logout
         setUser(null); // Assuming you have a setUser function to reset the user context
         alert("Logged out successfully");
-        localStorage.removeItem("token")
-        localStorage.removeItem("user")
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
         // Redirect to signup page after successful logout
         navigate("/signup"); // Assuming /signup is the path to your signup page
       } else {
@@ -58,7 +55,6 @@ const ProfileDropDown = (props: ProfileDropDownProps) => {
       console.error(error);
     }
   };
-
   return (
     <div className={`relative ${props.class}`}>
       <div className="flex items-center space-x-4">
@@ -96,66 +92,75 @@ const ProfileDropDown = (props: ProfileDropDownProps) => {
 // Type for the main nav component props
 const MainNav = () => {
   const [menuState, setMenuState] = useState<boolean>(false);
-
+  const { user } = useUserContext();
   return (
-    <nav className="border-b bg-white">
-      <div className="mx-auto flex max-w-screen-xl items-center space-x-8 px-4 py-3 md:px-8">
+    <nav className="fixed top-0  w-full border-b bg-white">
+      <div className="mx-auto flex max-w-screen-xl items-center justify-between space-x-8 px-4 py-3 md:px-8">
         <div className="flex-none lg:flex-initial">
-          <a href="javascript:void(0)">
+          <Link to={user ? "/dashboard" : "/"}>
             <img
               src="/smarthelm.svg"
               width={160}
               height={50}
               alt="Float UI logo"
             />
-          </a>
+          </Link>
         </div>
-        <div className="flex flex-1 items-center justify-between">
-          <div
-            className={`absolute left-0 top-16 z-20 w-full border-b bg-white p-4 lg:static lg:block lg:border-none ${menuState ? "" : "hidden"}`}
-          >
-            <ProfileDropDown class="mt-5 border-t pt-5 lg:hidden" />
-          </div>
-          <div className="flex flex-1 items-center justify-end space-x-2 sm:space-x-6">
-            <ProfileDropDown class="hidden lg:block" />
-            <button
-              className="block text-gray-400 outline-none lg:hidden"
-              onClick={() => setMenuState(!menuState)}
+        {user ? (
+          <div className="flex flex-1 items-center justify-between">
+            <div
+              className={`absolute left-0 top-16 z-20 w-full border-b bg-white p-4 lg:static lg:block lg:border-none ${menuState ? "" : "hidden"}`}
             >
-              {menuState ? (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 6h16M4 12h16m-7 6h7"
-                  />
-                </svg>
-              )}
-            </button>
+              <ProfileDropDown class="mt-5 border-t pt-5 lg:hidden" />
+            </div>
+            <div className="flex flex-1 items-center justify-end space-x-2 sm:space-x-6">
+              <ProfileDropDown class="hidden lg:block" />
+              <button
+                className="block text-gray-400 outline-none lg:hidden"
+                onClick={() => setMenuState(!menuState)}
+              >
+                {menuState ? (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                ) : (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 6h16M4 12h16m-7 6h7"
+                    />
+                  </svg>
+                )}
+              </button>
+            </div>
           </div>
-        </div>
+        ) : (
+          <Link
+            to="submit"
+            className="mt-3  rounded-lg bg-indigo-600 px-5 py-3 text-sm text-white duration-150 hover:bg-indigo-700 active:shadow-lg"
+          >
+            Sign in
+          </Link>
+        )}
       </div>
     </nav>
   );

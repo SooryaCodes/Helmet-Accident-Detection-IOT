@@ -1,5 +1,3 @@
-
-
 // controllers/userController.js
 const User = require("../models/User");
 const {
@@ -18,7 +16,10 @@ exports.addEmergencyContacts = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    user.emergencyContacts = { primaryPhone, secondaryPhone };
+    user.emergencyContacts = {
+      primaryPhone: "+91" + primaryPhone,
+      secondaryPhone: "+91" + secondaryPhone,
+    };
     await user.save();
 
     res.status(200).json({
@@ -54,8 +55,18 @@ exports.handleAccident = async (req, res) => {
     const emergencyContacts = user.emergencyContacts;
 
     if (emergencyContacts && emergencyContacts.primaryPhone) {
-      const message = `Emergency Alert: ${user.name} got into an accident at ${getFormattedDateTime()} near ${placeName}. Please verify the safety of ${user.name} by calling ${user.phone}. Check the accident location here https://maps.google.com/?q=${latitude},${longitude} and report to the emergency service asap.`;
-      const callMsg = `Emergency Alert: ${user.name} got into an accident at ${getFormattedDateTime()} near ${placeName}. Please verify ${user.name}'s safety by calling them. The accident location has been shared via WhatsApp. Kindly check and take necessary action.`;
+      const message = `Emergency Alert: ${
+        user.name
+      } got into an accident at ${getFormattedDateTime()} near ${placeName}. Please verify the safety of ${
+        user.name
+      } by calling ${
+        user.phone
+      }. Check the accident location here https://maps.google.com/?q=${latitude},${longitude} and report to the emergency service asap.`;
+      const callMsg = `Emergency Alert: ${
+        user.name
+      } got into an accident at ${getFormattedDateTime()} near ${placeName}. Please verify ${
+        user.name
+      }'s safety by calling them. The accident location has been shared via WhatsApp. Kindly check and take necessary action.`;
       await sendAlertToContacts(
         emergencyContacts.primaryPhone,
         message,

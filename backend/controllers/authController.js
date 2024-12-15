@@ -39,7 +39,7 @@ exports.signup = async (req, res) => {
       name,
       email,
       password: hashedPassword,
-      phone,
+      phone: "+91" + phone,
     });
 
     await newUser.save();
@@ -49,11 +49,17 @@ exports.signup = async (req, res) => {
     const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
       expiresIn: "10d", // Token expires in 10 days
     });
-    const { password, ...userWithoutPassword } = newUser;
+
+    let userData = {
+      name: newUser.name,
+      email: newUser.email,
+      phone: newUser.phone,
+      _id: newUser._id,
+    };
 
     res
       .status(201)
-      .json({ user: userWithoutPassword, token, message: "Signup successful" });
+      .json({ user: userData, token, message: "Signup successful" });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
   }
@@ -77,14 +83,19 @@ exports.login = async (req, res) => {
     }
 
     // Generate JWT token
-    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "10d", // Token expires in 10 days
     });
-    const { password, ...userWithoutPassword } = user;
+    let userData = {
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+      _id: user._id,
+    };
 
     res
       .status(200)
-      .json({ token, user: userWithoutPassword, message: "Login successful" });
+      .json({ token, user: userData, message: "Login successful" });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
   }

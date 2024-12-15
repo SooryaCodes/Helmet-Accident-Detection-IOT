@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useUserContext } from '../context/UserContext';
 
@@ -7,18 +7,14 @@ interface PrivateRouteProps {
 }
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ element }) => {
-  const { user } = useUserContext();
-  const [loading, setLoading] = useState(true);
+  const { user, isLoading } = useUserContext();
 
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 500); // Simulate loading state
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (loading) {
+  // Show loading message until user data is loaded
+  if (isLoading) {
     return <div>Loading...</div>;
   }
 
+  // If user is authenticated, show the element; otherwise, redirect to login
   return user ? element : <Navigate to="/login" replace />;
 };
 

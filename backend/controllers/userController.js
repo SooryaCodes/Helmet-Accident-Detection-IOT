@@ -92,6 +92,8 @@ exports.handleAccident = async (req, res) => {
 };
 // Link the MAC address to the user
 exports.linkUser = async (req, res) => {
+  console.log(req.body);
+  
   const { userId, macAddress } = req.body;
 
   // Validate input

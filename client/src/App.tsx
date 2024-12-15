@@ -8,6 +8,7 @@ import Login from "./pages/Login";
 import Layout from "./components/Layout";
 import PrivateRoute from "./components/PrivateRoute"; // Import PrivateRoute
 import Home from "./pages/Home";
+import BluetoothDeviceScanner from "./pages/Bt";
 
 const App: React.FC = () => {
   return (
@@ -58,6 +59,14 @@ const App: React.FC = () => {
             element={
               <Layout>
                 <Home />
+              </Layout>
+            }
+          />
+          <Route
+            path="/bt"
+            element={
+              <Layout>
+                <BluetoothDeviceScanner />
               </Layout>
             }
           />

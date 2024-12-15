@@ -54,7 +54,69 @@ const EmergencyContacts: React.FC = () => {
         <img src="/gradient.jpg" className="h-full w-full object-cover" alt="" />
       </div>
       <div className="col-span-1 flex flex-col items-center justify-center md:col-span-3">
-        
+        <div className="mb-10 grid place-items-center">
+          <ol className="hidden w-full items-center gap-5 space-y-4 md:flex lg:space-x-4 lg:space-y-0">
+            <li className="relative">
+              <a className="flex w-full items-center font-medium">
+                <span className="mr-3 flex h-6 w-6 items-center justify-center rounded-full border border-gray-200 bg-gray-50 text-xs lg:h-8 lg:w-8 lg:text-sm">
+                  1
+                </span>
+                <div className="block">
+                  <h4 className="text-xs text-gray-900 lg:text-base">Create Account</h4>
+                </div>
+                <svg
+                  className="ml-2 h-5 w-5 stroke-gray-900 sm:ml-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M5 18L9.67462 13.0607C10.1478 12.5607 10.3844 12.3107 10.3844 12C10.3844 11.6893 10.1478 11.4393 9.67462 10.9393L5 6M12.6608 18L17.3354 13.0607C17.8086 12.5607 18.0452 12.3107 18.0452 12C18.0452 11.6893 17.8086 11.4393 17.3354 10.9393L12.6608 6"
+                    stroke="stroke-current"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </a>
+            </li>
+            <li className="relative">
+              <a
+                href="https://pagedone.io/"
+                className="flex w-full items-center font-medium"
+              >
+                <span className="mr-3 flex h-6 w-6 items-center justify-center rounded-full border border-transparent bg-indigo-600 text-xs text-white lg:h-8 lg:w-8 lg:text-sm">
+                  2
+                </span>
+                <div className="block">
+                  <h4 className="text-xs text-indigo-600 lg:text-base">Add Contacts</h4>
+                </div>
+                <svg
+                  className="ml-2 h-5 w-5 stroke-indigo-600 sm:ml-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M5 18L9.67462 13.0607C10.1478 12.5607 10.3844 12.3107 10.3844 12C10.3844 11.6893 10.1478 11.4393 9.67462 10.9393L5 6M12.6608 18L17.3354 13.0607C17.8086 12.5607 18.0452 12.3107 18.0452 12C18.0452 11.6893 17.8086 11.4393 17.3354 10.9393L12.6608 6"
+                    stroke="stroke-current"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </a>
+            </li>
+            <li className="relative">
+              <a className="flex w-full items-center font-medium">
+                <span className="mr-3 flex h-6 w-6 items-center justify-center rounded-full border border-gray-200 bg-gray-50 text-xs lg:h-8 lg:w-8 lg:text-sm">
+                  3
+                </span>
+                <div className="block">
+                  <h4 className="text-xs text-gray-900 lg:text-base">Link Device</h4>
+                </div>
+              </a>
+            </li>
+          </ol>
+        </div>
 
         <form onSubmit={handleSubmit} className="max-w-md md:max-w-xl">
           {error && <div className="mb-4 text-red-600">{error}</div>} {/* Error message display */}

@@ -64,17 +64,10 @@ export default function Home() {
 
       console.log("Connected to GATT server.");
 
-      // Access the "device_information" service
-
-      // Example characteristic for device information or manufacturer name
-      const service = await server.getPrimaryService(
-        "00001800-0000-1000-8000-00805F9B34FB",
-      ); // Generic Access Service UUID
+      const service = await server.getPrimaryService(0x1800); // Generic Access Service UUID (as a valid alias)
 
       // Get the characteristic for the MAC address (UUID 0x2A2A)
-      const characteristic = await service.getCharacteristic(
-        "00002A2A-0000-1000-8000-00805F9B34FB",
-      );
+      const characteristic = await service.getCharacteristic(0x2a2a); // Manufacturer Name characteristic UUID (as a valid alias)
       const value = await characteristic.readValue();
 
       // Decode the value into a UTF-8 string
@@ -94,9 +87,8 @@ export default function Home() {
 
   return (
     <section className="flex min-h-screen flex-col items-center justify-center bg-gray-100">
-      <div className="mb-10 mt-10 grid place-items-center">
+      <div className="mb-10 grid place-items-center">
         <ol className="hidden w-full items-center gap-5 space-y-4 md:flex lg:space-x-4 lg:space-y-0">
-          {/* Steps UI */}
           <li className="relative">
             <a className="flex w-full items-center font-medium">
               <span className="mr-3 flex h-6 w-6 items-center justify-center rounded-full border border-gray-200 bg-gray-50 text-xs lg:h-8 lg:w-8 lg:text-sm">
@@ -107,6 +99,19 @@ export default function Home() {
                   Create Account
                 </h4>
               </div>
+              <svg
+                className="ml-2 h-5 w-5 stroke-gray-900 sm:ml-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M5 18L9.67462 13.0607C10.1478 12.5607 10.3844 12.3107 10.3844 12C10.3844 11.6893 10.1478 11.4393 9.67462 10.9393L5 6M12.6608 18L17.3354 13.0607C17.8086 12.5607 18.0452 12.3107 18.0452 12C18.0452 11.6893 17.8086 11.4393 17.3354 10.9393L12.6608 6"
+                  stroke="stroke-current"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                />
+              </svg>
             </a>
           </li>
           <li className="relative">
@@ -122,7 +127,10 @@ export default function Home() {
             </a>
           </li>
           <li className="relative">
-            <a className="flex w-full items-center font-medium">
+            <a
+              href="https://pagedone.io/"
+              className="flex w-full items-center font-medium"
+            >
               <span className="mr-3 flex h-6 w-6 items-center justify-center rounded-full border border-transparent bg-indigo-600 text-xs text-white lg:h-8 lg:w-8 lg:text-sm">
                 3
               </span>
@@ -131,6 +139,19 @@ export default function Home() {
                   Link Device
                 </h4>
               </div>
+              <svg
+                className="ml-2 h-5 w-5 stroke-indigo-600 sm:ml-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M5 18L9.67462 13.0607C10.1478 12.5607 10.3844 12.3107 10.3844 12C10.3844 11.6893 10.1478 11.4393 9.67462 10.9393L5 6M12.6608 18L17.3354 13.0607C17.8086 12.5607 18.0452 12.3107 18.0452 12C18.0452 11.6893 17.8086 11.4393 17.3354 10.9393L12.6608 6"
+                  stroke="stroke-current"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                />
+              </svg>
             </a>
           </li>
         </ol>

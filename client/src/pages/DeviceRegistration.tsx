@@ -36,7 +36,7 @@ type Device = {
 export default function DeviceRegistration() {
   // const { user } = useUserContext();
   const [devices, setDevices] = useState<Device[]>([]);
-  const [selectedDevice, setSelectedDevice] = useState<Device | null>(null);
+  const [selectedDevice] = useState<Device | null>(null);
   const navigate = useNavigate();
   const { user } = useUserContext();
   // Function to scan for devices

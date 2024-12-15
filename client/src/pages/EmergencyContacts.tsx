@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "../config/axios"; // Axios setup from previous steps
-import { Link, useNavigate } from "react-router-dom"; // For navigation after form submission
+import {  useNavigate } from "react-router-dom"; // For navigation after form submission
 
 const EmergencyContacts: React.FC = () => {
   const [contacts, setContacts] = useState({

@@ -17,8 +17,8 @@ const ProfileDropDown = (props: ProfileDropDownProps) => {
   const navigate = useNavigate(); // Get the navigate function for redirection
 
   const navigation = [
-    { title: "Dashboard", path: "javascript:void(0)" },
-    { title: "Log out", path: "javascript:void(0)", action: "logout" }, // Added action
+    { title: "Dashboard", path: "/dashboard" },
+    { title: "Log out", path: "#", action: "logout" }, // Added action
   ];
 
   useEffect(() => {
@@ -55,6 +55,7 @@ const ProfileDropDown = (props: ProfileDropDownProps) => {
       console.error(error);
     }
   };
+
   return (
     <div className={`relative ${props.class}`}>
       <div className="flex items-center space-x-4">
@@ -88,6 +89,7 @@ const ProfileDropDown = (props: ProfileDropDownProps) => {
     </div>
   );
 };
+
 type MyComponentProps = {
   bg: boolean; // Boolean prop
 };
@@ -95,10 +97,30 @@ type MyComponentProps = {
 // Type for the main nav component props
 const MainNav: React.FC<MyComponentProps> = ({ bg }) => {
   const [menuState, setMenuState] = useState<boolean>(false);
+  const [isScrolled, setIsScrolled] = useState<boolean>(false); // Track scroll state
   const { user } = useUserContext();
+
+  // Scroll effect for header background
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
     <nav
-      className={`fixed top-0 z-[999]  w-full border-b ${bg ? "bg-white" : ""}`}
+      className={`fixed top-0 z-[999] w-full border-b transition-colors duration-300 ${
+        isScrolled ? "bg-white shadow-md" : bg ? "bg-white" : "bg-transparent"
+      }`}
     >
       <div className="mx-auto flex max-w-screen-xl items-center justify-between space-x-8 px-4 py-3 md:px-8">
         <div className="flex-none lg:flex-initial">
@@ -107,14 +129,16 @@ const MainNav: React.FC<MyComponentProps> = ({ bg }) => {
               src="/smarthelm.svg"
               width={160}
               height={50}
-              alt="Float UI logo"
+              alt="SmartHelm logo"
             />
           </Link>
         </div>
         {user ? (
           <div className="flex flex-1 items-center justify-between">
             <div
-              className={`absolute left-0 top-16 z-20 w-full border-b bg-white p-4 lg:static lg:block lg:border-none ${menuState ? "" : "hidden"}`}
+              className={`absolute left-0 top-16 z-20 w-full border-b bg-white p-4 lg:static lg:block lg:border-none ${
+                menuState ? "" : "hidden"
+              }`}
             >
               <ProfileDropDown class="mt-5 border-t pt-5 lg:hidden" />
             </div>
@@ -160,8 +184,8 @@ const MainNav: React.FC<MyComponentProps> = ({ bg }) => {
           </div>
         ) : (
           <Link
-            to="submit"
-            className="mt-3  rounded-lg bg-indigo-600 px-5 py-3 text-sm text-white duration-150 hover:bg-indigo-700 active:shadow-lg"
+            to="/signup"
+            className="mt-3 rounded-lg bg-indigo-600 px-5 py-3 text-sm text-white duration-150 hover:bg-indigo-700 active:shadow-sm"
           >
             Sign in
           </Link>

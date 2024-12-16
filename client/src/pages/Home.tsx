@@ -60,14 +60,17 @@ export default function Example(): JSX.Element {
           {" "}
           {/* Reduced margin */}
           <div className="relative aspect-video w-full max-w-4xl">
-            <iframe
-              src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+            <video
+              controls
               title="SmartHelm Introduction"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
               className="absolute inset-0 h-full w-full rounded-lg"
-            ></iframe>
+            >
+              <source
+                src="/Helmet (1).mp4"
+                type="video/mp4"
+              />
+              Your browser does not support the video tag.
+            </video>
           </div>
         </div>
         <div

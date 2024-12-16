@@ -88,13 +88,18 @@ const ProfileDropDown = (props: ProfileDropDownProps) => {
     </div>
   );
 };
+type MyComponentProps = {
+  bg: boolean; // Boolean prop
+};
 
 // Type for the main nav component props
-const MainNav = () => {
+const MainNav: React.FC<MyComponentProps> = ({ bg }) => {
   const [menuState, setMenuState] = useState<boolean>(false);
   const { user } = useUserContext();
   return (
-    <nav className="fixed top-0  w-full border-b bg-white">
+    <nav
+      className={`fixed top-0 z-[999]  w-full border-b ${bg ? "bg-white" : ""}`}
+    >
       <div className="mx-auto flex max-w-screen-xl items-center justify-between space-x-8 px-4 py-3 md:px-8">
         <div className="flex-none lg:flex-initial">
           <Link to={user ? "/dashboard" : "/"}>

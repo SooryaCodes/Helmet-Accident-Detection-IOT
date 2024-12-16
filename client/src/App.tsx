@@ -6,9 +6,9 @@ import EmergencyContacts from "./pages/EmergencyContacts";
 import DeviceRegistration from "./pages/DeviceRegistration";
 import Login from "./pages/Login";
 import Layout from "./components/Layout";
-import PrivateRoute from "./components/PrivateRoute"; // Import PrivateRoute
 import Home from "./pages/Home";
 import BluetoothDeviceScanner from "./pages/Bt";
+import Dashboard from "./pages/Dashboard";
 
 const App: React.FC = () => {
   return (
@@ -32,7 +32,14 @@ const App: React.FC = () => {
               </Layout>
             }
           />
-
+          <Route
+            path="/dashboard"
+            element={
+              <Layout>
+                <Dashboard />
+              </Layout>
+            }
+          />
           {/* Protected Routes with Layout */}
           <Route
             path="/emergency-contacts"
@@ -45,21 +52,15 @@ const App: React.FC = () => {
           <Route
             path="/link-device"
             element={
-              <PrivateRoute
-                element={
-                  <Layout>
-                    <DeviceRegistration />
-                  </Layout>
-                }
-              />
+              <Layout>
+                <DeviceRegistration />
+              </Layout>
             }
           />
           <Route
             path="/"
             element={
-              <Layout>
                 <Home />
-              </Layout>
             }
           />
           <Route

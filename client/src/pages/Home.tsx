@@ -1,4 +1,4 @@
-
+import Header from "../components/Header"
 
 
 
@@ -93,7 +93,7 @@ export default function Example(): JSX.Element {
           </DialogPanel>
         </Dialog>
       </header> */}
-
+<Header bg={false}/>
       <div className="relative isolate px-6 pt-14 lg:px-8">
         <div
           aria-hidden="true"

@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import Features from "../components/Features";
 import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 export default function Example(): JSX.Element {
   return (
@@ -87,6 +88,7 @@ export default function Example(): JSX.Element {
         </div>
       </div>
       <Features />
+      <Footer/>
     </div>
   );
 }

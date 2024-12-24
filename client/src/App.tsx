@@ -6,14 +6,14 @@ import {
   Navigate,
 } from "react-router-dom";
 import { UserProvider } from "./context/UserContext";
-import Signup from "./pages/Signup";
-import EmergencyContacts from "./pages/EmergencyContacts";
-import DeviceRegistration from "./pages/DeviceRegistration";
-import Login from "./pages/Login";
-import Layout from "./components/Layout";
+// import Signup from "./pages/Signup";
+// import EmergencyContacts from "./pages/EmergencyContacts";
+// import DeviceRegistration from "./pages/DeviceRegistration";
+// import Login from "./pages/Login";
+// import Layout from "./components/Layout";
 import Home from "./pages/Home";
-import BluetoothDeviceScanner from "./pages/Bt";
-import Dashboard from "./pages/Dashboard";
+// import BluetoothDeviceScanner from "./pages/Bt";
+// import Dashboard from "./pages/Dashboard";
 
 const App: React.FC = () => {
   return (

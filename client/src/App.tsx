@@ -22,11 +22,11 @@ const App: React.FC = () => {
         <Routes>
           {/* Routes */}
           {/* Uncommented as needed */}
-          {/* <Route path="/signup" element={<Layout><Signup /></Layout>} />
+          <Route path="/signup" element={<Layout><Signup /></Layout>} />
         <Route path="/login" element={<Layout><Login /></Layout>} />
         <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
         <Route path="/emergency-contacts" element={<Layout><EmergencyContacts /></Layout>} />
-        <Route path="/link-device" element={<Layout><DeviceRegistration /></Layout>} /> */}
+        <Route path="/link-device" element={<Layout><DeviceRegistration /></Layout>} />
           <Route path="/" element={<Home />} />
           {/* <Route path="/bt" element={<Layout><BluetoothDeviceScanner /></Layout>} /> */}
 

@@ -7,7 +7,7 @@ const {
 } = require("../controllers/userController");
 
 const router = express.Router();
-
+  
 // Add Emergency Contacts
 router.put("/add-emergency-contacts", authenticate, addEmergencyContacts);
 // Route to get location and send alert
